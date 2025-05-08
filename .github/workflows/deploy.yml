@@ -1,0 +1,32 @@
+name: Weibo HotSearch Auto Deploy
+
+on:
+  schedule:
+    - cron: "*/5 * * * *"  # 每 5 分钟运行一次
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+
+      - name: Install dependencies
+        run: pip install requests
+
+      - name: Run main script
+        run: python weibo_hotsearch.py
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./files/weibo
+          keep_files: true
